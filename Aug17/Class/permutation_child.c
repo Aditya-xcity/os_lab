@@ -1,64 +1,43 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 
-int isPrime(int n)
+void permute(char s[], int l, int r)
 {
-    if (n < 2)
-        return 0;
-
-    for (int i = 2; i * i <= n; i++)
+    if (l == r)
+        printf("%s\n", s);
+    else
     {
-        if (n % i == 0)
-            return 0;
-    }
+        for (int i = l; i <= r; i++)
+        {
+            char temp = s[l];
+            s[l] = s[i];
+            s[i] = temp;
 
-    return 1;
+            permute(s, l + 1, r);
+
+            temp = s[l];
+            s[l] = s[i];
+            s[i] = temp;
+        }
+    }
 }
 
 int main()
 {
-    int n, arr[100], sum = 0;
-
-    printf("Enter number of elements: ");
-    scanf("%d", &n);
-
-    printf("Enter elements:\n");
-    for (int i = 0; i < n; i++)
-        scanf("%d", &arr[i]);
-
-    pid_t pid = fork();
-
-    if (pid < 0)
+    if (fork() == 0)
     {
-        printf("Fork failed!\n");
-        return 1;
-    }
+        char s[20];
 
-    if (pid == 0)
-    {
-        // Child process
-        printf("\nChild Process\n");
+        printf("Enter a string: ");
+        scanf("%19s", s);
 
-        for (int i = 0; i < n; i++)
-            sum += arr[i];
-
-        printf("Sum = %d\n", sum);
-
-        if (isPrime(sum))
-            printf("The sum %d is Prime.\n", sum);
-        else
-            printf("The sum %d is Not Prime.\n", sum);
-
-        exit(0);
+        printf("Permutations:\n");
+        permute(s, 0, strlen(s) - 1);
     }
     else
-    {
-        // Parent process
         wait(NULL);
-        printf("Parent process completed.\n");
-    }
 
     return 0;
 }
