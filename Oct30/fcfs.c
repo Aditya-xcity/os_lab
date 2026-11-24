@@ -12,21 +12,34 @@ int main(void)
     long long waiting = 0, totalWaiting = 0, totalTurnaround = 0;
 
     printf("Enter number of processes: ");
-    if (scanf("%d", &n) != 1 || n < 1 || n > 20)
+
+    if (scanf("%d", &n) != 1 || n < 1 || n > 20) {
+        fprintf(stderr, "Error: Enter a valid process count (1-20).\n");
         return 1;
+    }
 
     for (int i = 0; i < n; i++) {
         processes[i].id = i + 1;
+
         printf("P%d burst time: ", i + 1);
-        if (scanf("%d", &processes[i].burst) != 1 || processes[i].burst <= 0)
+
+        if (scanf("%d", &processes[i].burst) != 1 || processes[i].burst <= 0) {
+            fprintf(stderr, "Error: Burst time must be a positive integer.\n");
             return 1;
+        }
     }
 
     printf("Process\tBT\tWT\tTAT\n");
+
     for (int i = 0; i < n; i++) {
         long long turnaround = waiting + processes[i].burst;
-        printf("P%d\t%d\t%lld\t%lld\n", processes[i].id,
-               processes[i].burst, waiting, turnaround);
+
+        printf("P%d\t%d\t%lld\t%lld\n",
+               processes[i].id,
+               processes[i].burst,
+               waiting,
+               turnaround);
+
         totalWaiting += waiting;
         totalTurnaround += turnaround;
         waiting = turnaround;
@@ -34,5 +47,6 @@ int main(void)
 
     printf("Average Waiting Time = %.2f\n", (double)totalWaiting / n);
     printf("Average Turnaround Time = %.2f\n", (double)totalTurnaround / n);
+
     return 0;
 }
